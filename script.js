@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function calculateGrowth() {
+    // Retrieve input values for various accounts
+    // Calculate the growth for each year based on the provided parameters
+    // Display the results and achievements
+
     const initialBalanceRoth = parseFloat(document.getElementById('initialBalanceRoth').value);
     const annualContributionRoth = parseFloat(document.getElementById('annualContributionRoth').value);
     const annualReturnRateRoth = parseFloat(document.getElementById('annualReturnRateRoth').value) / 100;
