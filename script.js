@@ -117,3 +117,12 @@ function calculateGrowth() {
         achievementsList.appendChild(li);
     });
 }
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    html2canvas(document.body).then(canvas => {
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+        pdf.save('financial_growth_calculator.pdf');
+    });
+}

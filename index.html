@@ -13,7 +13,7 @@
         .container { padding: 20px; max-width: 1000px; margin: auto; }
         .card-panel { padding: 20px; }
         .input-field input { font-size: 1.2rem; }
-        .calculate-btn { 
+        .calculate-btn, .generate-pdf-btn { 
             font-size: 20px; 
             padding: 15px 30px; 
             background-color: #4CAF50; 
@@ -26,8 +26,8 @@
             align-items: center; 
             transition: background-color 0.3s, transform 0.3s; 
         }
-        .calculate-btn:hover { background-color: #45a049; }
-        .calculate-btn:active { transform: scale(0.98); }
+        .calculate-btn:hover, .generate-pdf-btn:hover { background-color: #45a049; }
+        .calculate-btn:active, .generate-pdf-btn:active { transform: scale(0.98); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
         th, td { padding: 12px 15px; text-align: right; border: 1px solid #ddd; }
         th { background-color: #4CAF50; color: white; }
@@ -45,8 +45,12 @@
         .quote-container { margin-top: 50px; padding: 20px; background-color: #f9f9f9; border-left: 5px solid #ff9800; border-radius: 10px; }
         .quote { font-family: 'Merriweather', serif; font-style: italic; color: #616161; font-size: 1.5em; }
         .quote-author { margin-top: 10px; text-align: right; font-weight: bold; color: #4CAF50; }
-        .summary-container { overflow-x: auto; }
+        .summary-container { overflow-x: auto; white-space: nowrap; }
+        table { table-layout: fixed; }
+        th, td { word-wrap: break-word; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -154,9 +158,15 @@
             <p class="quote">"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it."</p>
             <p class="quote-author">- Albert Einstein</p>
         </div>
+
+        <div class="row center-align">
+            <button type="button" class="generate-pdf-btn btn waves-effect waves-light" onclick="generatePDF()">Generate PDF</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
