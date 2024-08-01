@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Growth Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { padding: 20px; max-width: 800px; margin: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Financial Growth Calculator</h1>
+        <form id="calcForm">
+            <label for="initialBalance">Initial Balance ($):</label>
+            <input type="number" id="initialBalance" value="0"><br><br>
+
+            <label for="annualContribution">Annual Contribution ($):</label>
+            <input type="number" id="annualContribution" value="7000"><br><br>
+
+            <label for="annualReturnRate">Annual Return Rate (%):</label>
+            <input type="number" step="0.01" id="annualReturnRate" value="16"><br><br>
+
+            <label for="years">Years:</label>
+            <input type="number" id="years" value="38"><br><br>
+
+            <button type="button" onclick="calculateGrowth()">Calculate</button>
+        </form>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Previous Balance ($)</th>
+                    <th>Annual Contribution ($)</th>
+                    <th>Monthly Contribution ($)</th>
+                    <th>Return ($)</th>
+                    <th>End of Year Balance ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function calculateGrowth() {
+            const initialBalance = parseFloat(document.getElementById('initialBalance').value);
+            let annualContribution = parseFloat(document.getElementById('annualContribution').value);
+            const annualReturnRate = parseFloat(document.getElementById('annualReturnRate').value) / 100;
+            const years = parseInt(document.getElementById('years').value);
+
+            let data = [];
+            let balance = initialBalance;
+
+            for (let year = 1; year <= years; year++) {
+                const previousBalance = balance;
+                const endOfYearBalance = previousBalance + annualContribution;
+                const returnAmount = endOfYearBalance * annualReturnRate;
+                balance = endOfYearBalance + returnAmount;
+                data.push([year, previousBalance, annualContribution, annualContribution / 12, returnAmount, balance]);
+            }
+
+            const resultTable = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+            resultTable.innerHTML = '';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = Math.round(cell).toLocaleString();
+                    tr.appendChild(td);
+                });
+                resultTable.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
