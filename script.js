@@ -73,7 +73,7 @@ function calculateGrowth() {
             `<span class="positive">+${Math.round(totalAnnualReturns).toLocaleString()}</span>`,
             Math.round(totalAnnualContributions).toLocaleString(),
             Math.round(totalMonthlyContributions).toLocaleString(),
-            Math.round(totalBalance).toLocaleString(),
+            `<span class="highlight">${Math.round(totalBalance).toLocaleString()}</span>`,
             rowClass
         ]);
 
