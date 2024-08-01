@@ -7,90 +7,97 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 8px; text-align: right; }
-        th { background-color: #f2f2f2; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+        .card-panel { padding: 20px; }
+        .input-field input { font-size: 1.2rem; }
+        .calculate-btn { font-size: 18px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 20px; }
+        .calculate-btn:hover { background-color: #45a049; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
+        th, td { padding: 12px 15px; text-align: right; border: 1px solid #ddd; }
+        th { background-color: #4CAF50; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
         .milestone { background-color: #ffeb3b; }
         .positive { color: green; }
-        .calculate-btn { font-size: 16px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 20px; }
-        .calculate-btn:hover { background-color: #45a049; }
-        .input-field label { top: -20px; font-size: 1rem; }
+        .center-align { text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="center-align">Financial Growth Calculator</h1>
-        <form id="calcForm">
-            <h4>Roth IRA</h4>
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="number" id="initialBalanceRoth" value="0" class="validate">
-                    <label for="initialBalanceRoth">Initial Balance ($)</label>
+        
+        <div class="card-panel z-depth-2">
+            <form id="calcForm">
+                <h4>Roth IRA</h4>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="initialBalanceRoth" value="0" class="validate">
+                        <label for="initialBalanceRoth">Initial Balance ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="annualContributionRoth" value="7000" class="validate">
+                        <label for="annualContributionRoth">Annual Contribution ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" step="0.01" id="annualReturnRateRoth" value="16" class="validate">
+                        <label for="annualReturnRateRoth">Annual Return Rate (%)</label>
+                    </div>
                 </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" id="annualContributionRoth" value="7000" class="validate">
-                    <label for="annualContributionRoth">Annual Contribution ($)</label>
+                
+                <h4>401k</h4>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="initialBalance401k" value="0" class="validate">
+                        <label for="initialBalance401k">Initial Balance ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="annualContribution401k" value="23000" class="validate">
+                        <label for="annualContribution401k">Annual Contribution ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" step="0.01" id="annualReturnRate401k" value="23" class="validate">
+                        <label for="annualReturnRate401k">Annual Return Rate (%)</label>
+                    </div>
                 </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" step="0.01" id="annualReturnRateRoth" value="16" class="validate">
-                    <label for="annualReturnRateRoth">Annual Return Rate (%)</label>
+                
+                <h4>Brokerage</h4>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="initialBalanceBrokerage" value="1000" class="validate">
+                        <label for="initialBalanceBrokerage">Initial Balance ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="annualContributionBrokerage" value="50000" class="validate">
+                        <label for="annualContributionBrokerage">Annual Contribution ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="contributionIncreaseBrokerage" value="6000" class="validate">
+                        <label for="contributionIncreaseBrokerage">Annual Contribution Increase ($)</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" step="0.01" id="annualReturnRateBrokerage" value="18" class="validate">
+                        <label for="annualReturnRateBrokerage">Annual Return Rate (%)</label>
+                    </div>
                 </div>
-            </div>
-            
-            <h4>401k</h4>
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="number" id="initialBalance401k" value="0" class="validate">
-                    <label for="initialBalance401k">Initial Balance ($)</label>
+                
+                <h4>Common Parameters</h4>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="startAge" value="27" class="validate">
+                        <label for="startAge">Starting Age</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="number" id="endAge" value="65" class="validate">
+                        <label for="endAge">Ending Age</label>
+                    </div>
                 </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" id="annualContribution401k" value="23000" class="validate">
-                    <label for="annualContribution401k">Annual Contribution ($)</label>
-                </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" step="0.01" id="annualReturnRate401k" value="23" class="validate">
-                    <label for="annualReturnRate401k">Annual Return Rate (%)</label>
-                </div>
-            </div>
-            
-            <h4>Brokerage</h4>
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="number" id="initialBalanceBrokerage" value="1000" class="validate">
-                    <label for="initialBalanceBrokerage">Initial Balance ($)</label>
-                </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" id="annualContributionBrokerage" value="50000" class="validate">
-                    <label for="annualContributionBrokerage">Annual Contribution ($)</label>
-                </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" id="contributionIncreaseBrokerage" value="6000" class="validate">
-                    <label for="contributionIncreaseBrokerage">Annual Contribution Increase ($)</label>
-                </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" step="0.01" id="annualReturnRateBrokerage" value="18" class="validate">
-                    <label for="annualReturnRateBrokerage">Annual Return Rate (%)</label>
-                </div>
-            </div>
-            
-            <h4>Common Parameters</h4>
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="number" id="startAge" value="27" class="validate">
-                    <label for="startAge">Starting Age</label>
-                </div>
-                <div class="input-field col s12 m6">
-                    <input type="number" id="endAge" value="65" class="validate">
-                    <label for="endAge">Ending Age</label>
-                </div>
-            </div>
 
-            <div class="row center-align">
-                <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">Calculate</button>
-            </div>
-        </form>
+                <div class="row center-align">
+                    <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">Calculate</button>
+                </div>
+            </form>
+        </div>
 
         <h2 class="center-align">Results</h2>
         <table class="striped">
