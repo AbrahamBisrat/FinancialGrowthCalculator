@@ -1,26 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Materialize components
     M.updateTextFields();
 });
 
 function calculateGrowth() {
-    // Retrieve input values for Roth IRA
     const initialBalanceRoth = parseFloat(document.getElementById('initialBalanceRoth').value);
     const annualContributionRoth = parseFloat(document.getElementById('annualContributionRoth').value);
     const annualReturnRateRoth = parseFloat(document.getElementById('annualReturnRateRoth').value) / 100;
     
-    // Retrieve input values for 401k
     const initialBalance401k = parseFloat(document.getElementById('initialBalance401k').value);
     const annualContribution401k = parseFloat(document.getElementById('annualContribution401k').value);
     const annualReturnRate401k = parseFloat(document.getElementById('annualReturnRate401k').value) / 100;
     
-    // Retrieve input values for Brokerage
     const initialBalanceBrokerage = parseFloat(document.getElementById('initialBalanceBrokerage').value);
     const annualContributionBrokerage = parseFloat(document.getElementById('annualContributionBrokerage').value);
     const contributionIncreaseBrokerage = parseFloat(document.getElementById('contributionIncreaseBrokerage').value);
     const annualReturnRateBrokerage = parseFloat(document.getElementById('annualReturnRateBrokerage').value) / 100;
 
-    // Retrieve common parameters
     const startAge = parseInt(document.getElementById('startAge').value);
     const endAge = parseInt(document.getElementById('endAge').value);
     const years = endAge - startAge;
@@ -31,39 +26,32 @@ function calculateGrowth() {
     let balanceBrokerage = initialBalanceBrokerage;
     let annualContributionBrokerageCurrent = annualContributionBrokerage;
 
-    // Loop through each year to calculate balances and returns
     for (let year = 1; year <= years; year++) {
-        // Calculate Roth IRA balance and returns
         const previousBalanceRoth = balanceRoth;
         const endOfYearBalanceRoth = previousBalanceRoth + annualContributionRoth;
         const returnAmountRoth = endOfYearBalanceRoth * annualReturnRateRoth;
         balanceRoth = endOfYearBalanceRoth + returnAmountRoth;
 
-        // Calculate 401k balance and returns
         const previousBalance401k = balance401k;
         const endOfYearBalance401k = previousBalance401k + annualContribution401k;
         const returnAmount401k = endOfYearBalance401k * annualReturnRate401k;
         balance401k = endOfYearBalance401k + returnAmount401k;
 
-        // Calculate Brokerage balance and returns
         const previousBalanceBrokerage = balanceBrokerage;
         const endOfYearBalanceBrokerage = previousBalanceBrokerage + annualContributionBrokerageCurrent;
         const returnAmountBrokerage = endOfYearBalanceBrokerage * annualReturnRateBrokerage;
         balanceBrokerage = endOfYearBalanceBrokerage + returnAmountBrokerage;
         annualContributionBrokerageCurrent += contributionIncreaseBrokerage;
 
-        // Calculate total annual returns and contributions
         const totalAnnualReturns = returnAmountRoth + returnAmount401k + returnAmountBrokerage;
         const totalAnnualContributions = annualContributionRoth + annualContribution401k + annualContributionBrokerageCurrent;
         const totalMonthlyContributions = totalAnnualContributions / 12;
         const totalBalance = balanceRoth + balance401k + balanceBrokerage;
 
-        // Determine row class for milestones
         const rowClass = (year % 5 === 0) ? 'milestone' : '';
 
-        // Append data for the current year
         data.push([
-            startAge + year - 1, // Serial numbers starting from starting age
+            startAge + year - 1,
             startAge + year - 1,
             Math.round(balanceRoth).toLocaleString(),
             Math.round(balance401k).toLocaleString(),
@@ -76,7 +64,6 @@ function calculateGrowth() {
         ]);
     }
 
-    // Populate the results table
     const resultTableBody = document.getElementById('resultTableBody');
     resultTableBody.innerHTML = '';
 
