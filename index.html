@@ -26,6 +26,8 @@
         .achievements-section { margin-top: 40px; }
         .achievements-header { font-size: 24px; color: #4CAF50; margin-bottom: 20px; }
         .achievement-item { background-color: #e0f7fa; padding: 10px; margin: 5px 0; border-left: 5px solid #4CAF50; }
+        .achievement-item:nth-child(odd) { background-color: #b2dfdb; }
+        .achievement-item span { font-weight: bold; color: #4CAF50; }
     </style>
 </head>
 <body>
@@ -124,7 +126,7 @@
 
         <div class="achievements-section">
             <h2 class="achievements-header center-align">Achievements</h2>
-            <ul id="achievementsList" class="collection with-header">
+            <ul id="achievementsList" class="collection">
             </ul>
         </div>
     </div>
