@@ -8,22 +8,22 @@ function addAccount() {
     accountCounter++;
     const accountHTML = `
         <div class="account" id="account-${accountCounter}">
-            <h4 class="section-title"><input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate" placeholder="Label"> <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
+            <h4 class="section-title">${accountCounter > 1 ? `<input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate" placeholder="Label">` : ''} <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
             <div class="row">
                 <div class="input-field col s12 m6">
-                    <input type="number" id="initialBalance-${accountCounter}" value="0" class="validate">
+                    <input type="number" id="initialBalance-${accountCounter}" class="validate">
                     <label for="initialBalance-${accountCounter}">Initial Balance ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <input type="number" id="annualContribution-${accountCounter}" value="0" class="validate">
+                    <input type="number" id="annualContribution-${accountCounter}" class="validate">
                     <label for="annualContribution-${accountCounter}">Annual Contribution ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <input type="number" step="0.01" id="annualReturnRate-${accountCounter}" value="7" class="validate">
+                    <input type="number" step="0.01" id="annualReturnRate-${accountCounter}" class="validate">
                     <label for="annualReturnRate-${accountCounter}">Annual Return Rate (%)</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <input type="number" id="contributionIncrease-${accountCounter}" value="0" class="validate">
+                    <input type="number" id="contributionIncrease-${accountCounter}" class="validate">
                     <label for="contributionIncrease-${accountCounter}">Annual Contribution Increase ($)</label>
                 </div>
             </div>
@@ -48,7 +48,7 @@ function addSampleAccount(label, initialBalance, annualContribution, annualRetur
     accountCounter++;
     const accountHTML = `
         <div class="account" id="account-${accountCounter}">
-            <h4 class="section-title"><input type="text" id="accountLabel-${accountCounter}" value="${label}" class="validate"> <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
+            <h4 class="section-title">${label} <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" value="${initialBalance}" class="validate">

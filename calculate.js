@@ -15,7 +15,8 @@ function calculateGrowth() {
 
     accounts.forEach(account => {
         const id = account.id.split('-')[1];
-        const label = document.getElementById(`accountLabel-${id}`).value;
+        const labelElement = document.getElementById(`accountLabel-${id}`);
+        const label = labelElement ? labelElement.value : `Account ${id}`;
         let initialBalance = parseFloat(document.getElementById(`initialBalance-${id}`).value);
         let annualContribution = parseFloat(document.getElementById(`annualContribution-${id}`).value);
         let annualReturnRate = parseFloat(document.getElementById(`annualReturnRate-${id}`).value) / 100;
