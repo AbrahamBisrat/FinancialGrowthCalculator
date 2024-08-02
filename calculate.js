@@ -10,40 +10,50 @@ function calculateGrowth() {
     let data = [];
     let labels = [];
     let balances = {};
-    let contributions = {};
-    let returns = {};
-    let totalContributions = 0;
-    let totalMonthlyContributions = 0;
+    let totalContributions = {};
+    let totalReturns = {};
 
     accounts.forEach(account => {
         const id = account.id.split('-')[1];
         const label = document.getElementById(`accountLabel-${id}`).value;
-        balances[label] = new Array(years).fill(0);
-        balances[label][0] = parseFloat(document.getElementById(`initialBalance-${id}`).value);
-        contributions[label] = parseFloat(document.getElementById(`annualContribution-${id}`).value);
-        returns[label] = parseFloat(document.getElementById(`annualReturnRate-${id}`).value) / 100;
+        let initialBalance = parseFloat(document.getElementById(`initialBalance-${id}`).value);
+        let annualContribution = parseFloat(document.getElementById(`annualContribution-${id}`).value);
+        let annualReturnRate = parseFloat(document.getElementById(`annualReturnRate-${id}`).value) / 100;
         let contributionIncrease = parseFloat(document.getElementById(`contributionIncrease-${id}`).value) || 0;
 
+        balances[label] = [initialBalance];
+        totalContributions[label] = annualContribution;
+        totalReturns[label] = [];
+
         for (let year = 1; year <= years; year++) {
-            const previousBalance = balances[label][year - 1];
-            const endOfYearBalance = previousBalance + contributions[label];
-            const returnAmount = endOfYearBalance * returns[label];
-            balances[label][year] = endOfYearBalance + returnAmount;
-            contributions[label] += contributionIncrease;
-            totalContributions += contributions[label];
-            totalMonthlyContributions += contributions[label] / 12;
+            let previousBalance = balances[label][year - 1];
+            let endOfYearBalance = previousBalance + annualContribution;
+            let returnAmount = endOfYearBalance * annualReturnRate;
+            balances[label].push(endOfYearBalance + returnAmount);
+            annualContribution += contributionIncrease;
+            totalReturns[label].push(returnAmount);
         }
     });
 
     for (let year = 1; year <= years; year++) {
-        const row = [startAge + year - 1, startAge + year - 1];
+        let row = [startAge + year - 1, startAge + year - 1];
+        let totalBalance = 0;
+        let totalAnnualReturns = 0;
+        let totalAnnualContributions = 0;
+        let totalMonthlyContributions = 0;
+
         Object.keys(balances).forEach(label => {
             row.push(Math.round(balances[label][year]).toLocaleString());
+            totalBalance += balances[label][year];
+            totalAnnualReturns += totalReturns[label][year - 1];
+            totalAnnualContributions += totalContributions[label];
+            totalMonthlyContributions += totalContributions[label] / 12;
         });
-        row.push(`<span class="positive">+${Math.round(totalContributions).toLocaleString()}</span>`);
-        row.push(Math.round(totalContributions).toLocaleString());
+
+        row.push(`<span class="positive">+${Math.round(totalAnnualReturns).toLocaleString()}</span>`);
+        row.push(Math.round(totalAnnualContributions).toLocaleString());
         row.push(Math.round(totalMonthlyContributions).toLocaleString());
-        row.push(`<span class="highlight">+${Math.round(Object.values(balances).reduce((sum, balance) => sum + balance[year], 0)).toLocaleString()}</span>`);
+        row.push(`<span class="highlight">+${Math.round(totalBalance).toLocaleString()}</span>`);
         data.push(row);
         labels.push(startAge + year - 1);
     }
