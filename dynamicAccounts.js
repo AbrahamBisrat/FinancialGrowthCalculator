@@ -8,7 +8,7 @@ function addAccount() {
     accountCounter++;
     const accountHTML = `
         <div class="account" id="account-${accountCounter}">
-            <h4 class="section-title">${accountCounter > 1 ? `<input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate" placeholder="Label">` : ''} <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
+            <h4 class="section-title"><input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate"> <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" class="validate">
