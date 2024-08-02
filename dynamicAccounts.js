@@ -1,15 +1,15 @@
 let accountCounter = 0;
 
+document.addEventListener('DOMContentLoaded', () => {
+    addSampleAccount('Roth IRA', 0, 6000, 7);
+});
+
 function addAccount() {
     accountCounter++;
     const accountHTML = `
         <div class="account" id="account-${accountCounter}">
-            <h4 class="section-title">Account ${accountCounter} <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
+            <h4 class="section-title"><input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate" placeholder="Label"> <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
             <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="text" id="accountLabel-${accountCounter}" value="Account ${accountCounter}" class="validate">
-                    <label for="accountLabel-${accountCounter}">Label</label>
-                </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" value="0" class="validate">
                     <label for="initialBalance-${accountCounter}">Initial Balance ($)</label>
@@ -48,12 +48,8 @@ function addSampleAccount(label, initialBalance, annualContribution, annualRetur
     accountCounter++;
     const accountHTML = `
         <div class="account" id="account-${accountCounter}">
-            <h4 class="section-title">${label} <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
+            <h4 class="section-title"><input type="text" id="accountLabel-${accountCounter}" value="${label}" class="validate"> <button type="button" class="btn red btn-remove" onclick="removeAccount(${accountCounter})">Remove</button></h4>
             <div class="row">
-                <div class="input-field col s12 m6">
-                    <input type="text" id="accountLabel-${accountCounter}" value="${label}" class="validate">
-                    <label for="accountLabel-${accountCounter}">Label</label>
-                </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" value="${initialBalance}" class="validate">
                     <label for="initialBalance-${accountCounter}">Initial Balance ($)</label>
