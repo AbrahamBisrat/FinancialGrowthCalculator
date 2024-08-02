@@ -50,9 +50,12 @@
             .calculate-btn, .generate-pdf-btn { font-size: 16px; padding: 10px 20px; }
             .section-title { font-size: 20px; }
         }
+        #chart-container { margin-top: 30px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
 </head>
 <body>
     <div class="container">
@@ -150,6 +153,10 @@
             </table>
         </div>
 
+        <div id="chart-container">
+            <canvas id="growthChart"></canvas>
+        </div>
+
         <div class="achievements-section">
             <h2 class="achievements-header center-align">Achievements</h2>
             <ul id="achievementsList" class="collection">
@@ -169,6 +176,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script src="script.js"></script>
 </body>
 </html>
