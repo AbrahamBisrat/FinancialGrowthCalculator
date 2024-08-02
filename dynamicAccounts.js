@@ -12,24 +12,25 @@ function addAccount() {
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" class="validate">
-                    <label for="initialBalance-${accountCounter}">Initial Balance ($)</label>
+                    <label for="initialBalance-${accountCounter}" class="active">Initial Balance ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="annualContribution-${accountCounter}" class="validate">
-                    <label for="annualContribution-${accountCounter}">Annual Contribution ($)</label>
+                    <label for="annualContribution-${accountCounter}" class="active">Annual Contribution ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" step="0.01" id="annualReturnRate-${accountCounter}" class="validate">
-                    <label for="annualReturnRate-${accountCounter}">Annual Return Rate (%)</label>
+                    <label for="annualReturnRate-${accountCounter}" class="active">Annual Return Rate (%)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="contributionIncrease-${accountCounter}" class="validate">
-                    <label for="contributionIncrease-${accountCounter}">Annual Contribution Increase ($)</label>
+                    <label for="contributionIncrease-${accountCounter}" class="active">Annual Contribution Increase ($)</label>
                 </div>
             </div>
         </div>
     `;
     document.getElementById('accountsContainer').insertAdjacentHTML('beforeend', accountHTML);
+    M.updateTextFields(); // Ensure labels are properly aligned
 }
 
 function removeAccount(accountId) {
@@ -52,22 +53,23 @@ function addSampleAccount(label, initialBalance, annualContribution, annualRetur
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input type="number" id="initialBalance-${accountCounter}" value="${initialBalance}" class="validate">
-                    <label for="initialBalance-${accountCounter}">Initial Balance ($)</label>
+                    <label for="initialBalance-${accountCounter}" class="active">Initial Balance ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="annualContribution-${accountCounter}" value="${annualContribution}" class="validate">
-                    <label for="annualContribution-${accountCounter}">Annual Contribution ($)</label>
+                    <label for="annualContribution-${accountCounter}" class="active">Annual Contribution ($)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" step="0.01" id="annualReturnRate-${accountCounter}" value="${annualReturnRate}" class="validate">
-                    <label for="annualReturnRate-${accountCounter}">Annual Return Rate (%)</label>
+                    <label for="annualReturnRate-${accountCounter}" class="active">Annual Return Rate (%)</label>
                 </div>
                 <div class="input-field col s12 m6">
                     <input type="number" id="contributionIncrease-${accountCounter}" value="${contributionIncrease}" class="validate">
-                    <label for="contributionIncrease-${accountCounter}">Annual Contribution Increase ($)</label>
+                    <label for="contributionIncrease-${accountCounter}" class="active">Annual Contribution Increase ($)</label>
                 </div>
             </div>
         </div>
     `;
     document.getElementById('accountsContainer').insertAdjacentHTML('beforeend', accountHTML);
+    M.updateTextFields(); // Ensure labels are properly aligned
 }

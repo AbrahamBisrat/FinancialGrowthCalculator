@@ -23,7 +23,7 @@ function calculateGrowth() {
         let contributionIncrease = parseFloat(document.getElementById(`contributionIncrease-${id}`).value) || 0;
 
         balances[label] = [initialBalance];
-        totalContributions[label] = annualContribution;
+        totalContributions[label] = [annualContribution];
         totalReturns[label] = [];
 
         for (let year = 1; year <= years; year++) {
@@ -33,6 +33,7 @@ function calculateGrowth() {
             balances[label].push(endOfYearBalance + returnAmount);
             annualContribution += contributionIncrease;
             totalReturns[label].push(returnAmount);
+            totalContributions[label].push(annualContribution);
         }
     });
 
@@ -47,8 +48,8 @@ function calculateGrowth() {
             row.push(Math.round(balances[label][year]).toLocaleString());
             totalBalance += balances[label][year];
             totalAnnualReturns += totalReturns[label][year - 1];
-            totalAnnualContributions += totalContributions[label];
-            totalMonthlyContributions += totalContributions[label] / 12;
+            totalAnnualContributions += totalContributions[label][year - 1];
+            totalMonthlyContributions += totalContributions[label][year - 1] / 12;
         });
 
         row.push(`<span class="positive">+${Math.round(totalAnnualReturns).toLocaleString()}</span>`);
