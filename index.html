@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400;1,700&display=swap"
+        rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container" id="pdf-content">
         <div class="card-panel z-depth-2">
@@ -30,7 +33,6 @@
                         <label for="annualReturnRateRoth">Annual Return Rate (%)</label>
                     </div>
                 </div>
-                
                 <h4 class="section-title">401k</h4>
                 <div class="row">
                     <div class="input-field col s12 m6">
@@ -46,7 +48,6 @@
                         <label for="annualReturnRate401k">Annual Return Rate (%)</label>
                     </div>
                 </div>
-                
                 <h4 class="section-title">Brokerage</h4>
                 <div class="row">
                     <div class="input-field col s12 m6">
@@ -66,7 +67,6 @@
                         <label for="annualReturnRateBrokerage">Annual Return Rate (%)</label>
                     </div>
                 </div>
-                
                 <h4 class="section-title">Common Parameters</h4>
                 <div class="row">
                     <div class="input-field col s12 m6">
@@ -78,15 +78,15 @@
                         <label for="endAge">Ending Age</label>
                     </div>
                 </div>
-
                 <div class="row center-align btn-container">
-                    <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">Calculate</button>
+                    <button type="button" class="calculate-btn btn waves-effect waves-light"
+                        onclick="calculateGrowth()">Calculate</button>
                 </div>
             </form>
         </div>
-
         <div class="card-panel z-depth-2 summary-container">
             <h2 class="center-align section-title">Results</h2>
+            <div id="chart-container"><canvas id="growthChart"></canvas></div>
             <table class="striped">
                 <thead>
                     <tr>
@@ -101,31 +101,23 @@
                         <th class="highlight">Total Balance ($)</th>
                     </tr>
                 </thead>
-                <tbody id="resultTableBody">
-                </tbody>
+                <tbody id="resultTableBody"></tbody>
             </table>
         </div>
-
-        <div id="chart-container">
-            <canvas id="growthChart"></canvas>
-        </div>
-
         <div class="achievements-section">
             <h2 class="achievements-header center-align">Achievements</h2>
-            <ul id="achievementsList" class="collection">
-            </ul>
+            <ul id="achievementsList" class="collection"></ul>
         </div>
-
         <div class="quote-container">
-            <p class="quote">"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it."</p>
+            <p class="quote">"Compound interest is the eighth wonder of the world. He who understands it, earns it; he
+                who doesn't, pays it."</p>
             <p class="quote-author">- Albert Einstein</p>
         </div>
     </div>
-
     <div class="row center-align btn-container">
-        <button type="button" class="generate-pdf-btn btn waves-effect waves-light" onclick="generatePDF()">Generate PDF</button>
+        <button type="button" class="generate-pdf-btn btn waves-effect waves-light" onclick="generatePDF()">Generate
+            PDF</button>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
@@ -133,4 +125,5 @@
     <script src="charts.js"></script>
     <script src="pdf.js"></script>
 </body>
+
 </html>
