@@ -26,7 +26,9 @@ body {
 }
 
 .calculate-btn,
-.generate-pdf-btn {
+.generate-pdf-btn,
+.add-account-btn,
+.sample-data-btn {
     font-size: 20px;
     padding: 15px 30px;
     background-color: #4CAF50;
@@ -34,16 +36,23 @@ body {
     border: none;
     cursor: pointer;
     margin: 10px;
-    transition: background-color 0.3s, transform 0.3s
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center
 }
 
 .calculate-btn:hover,
-.generate-pdf-btn:hover {
+.generate-pdf-btn:hover,
+.add-account-btn:hover,
+.sample-data-btn:hover {
     background-color: #45a049
 }
 
 .calculate-btn:active,
-.generate-pdf-btn:active {
+.generate-pdf-btn:active,
+.add-account-btn:active,
+.sample-data-btn:active {
     transform: scale(0.98)
 }
 
@@ -161,7 +170,9 @@ tr:hover {
     }
 
     .calculate-btn,
-    .generate-pdf-btn {
+    .generate-pdf-btn,
+    .add-account-btn,
+    .sample-data-btn {
         font-size: 16px;
         padding: 10px 20px
     }
