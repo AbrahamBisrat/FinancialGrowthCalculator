@@ -1,102 +1,116 @@
 document.addEventListener('DOMContentLoaded', function() {
     M.updateTextFields();
+    addInitialAccounts();
 });
 
-function calculateGrowth() {
-    // Retrieve input values for various accounts
-    const initialBalanceRoth = parseFloat(document.getElementById('initialBalanceRoth').value);
-    const annualContributionRoth = parseFloat(document.getElementById('annualContributionRoth').value);
-    const annualReturnRateRoth = parseFloat(document.getElementById('annualReturnRateRoth').value) / 100;
-    
-    const initialBalance401k = parseFloat(document.getElementById('initialBalance401k').value);
-    const annualContribution401k = parseFloat(document.getElementById('annualContribution401k').value);
-    const annualReturnRate401k = parseFloat(document.getElementById('annualReturnRate401k').value) / 100;
-    
-    const initialBalanceBrokerage = parseFloat(document.getElementById('initialBalanceBrokerage').value);
-    const annualContributionBrokerage = parseFloat(document.getElementById('annualContributionBrokerage').value);
-    const contributionIncreaseBrokerage = parseFloat(document.getElementById('contributionIncreaseBrokerage').value);
-    const annualReturnRateBrokerage = parseFloat(document.getElementById('annualReturnRateBrokerage').value) / 100;
+let accountId = 0;
 
+function addInitialAccounts() {
+    addAccount('Roth IRA', 0, 6000, 7);
+    addAccount('401k', 10000, 19500, 7);
+    addAccount('Brokerage', 5000, 10000, 7, 500);
+}
+
+function addAccount(name = '', initialBalance = '', annualContribution = '', annualReturnRate = '', contributionIncrease = '') {
+    const accountSection = document.createElement('div');
+    accountSection.classList.add('account-section');
+    accountSection.innerHTML = `
+        <h4 class="section-title">Account ${accountId + 1} <span class="account-remove-btn" onclick="removeAccount(${accountId})">Remove</span></h4>
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <input type="text" id="accountName${accountId}" value="${name}" class="validate">
+                <label for="accountName${accountId}">Account Name</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input type="number" id="initialBalance${accountId}" value="${initialBalance}" class="validate">
+                <label for="initialBalance${accountId}">Initial Balance ($)</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input type="number" id="annualContribution${accountId}" value="${annualContribution}" class="validate">
+                <label for="annualContribution${accountId}">Annual Contribution ($)</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input type="number" step="0.01" id="annualReturnRate${accountId}" value="${annualReturnRate}" class="validate">
+                <label for="annualReturnRate${accountId}">Annual Return Rate (%)</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input type="number" id="contributionIncrease${accountId}" value="${contributionIncrease}" class="validate">
+                <label for="contributionIncrease${accountId}">Annual Contribution Increase ($)</label>
+            </div>
+        </div>
+    `;
+    document.getElementById('accounts').appendChild(accountSection);
+    M.updateTextFields();
+    accountId++;
+}
+
+function removeAccount(id) {
+    const accountSection = document.getElementById(`account${id}`);
+    accountSection.remove();
+}
+
+function calculateGrowth() {
     const startAge = parseInt(document.getElementById('startAge').value);
     const endAge = parseInt(document.getElementById('endAge').value);
     const years = endAge - startAge;
-
     let data = [];
-    let balanceRoth = initialBalanceRoth;
-    let balance401k = initialBalance401k;
-    let balanceBrokerage = initialBalanceBrokerage;
-    let annualContributionBrokerageCurrent = annualContributionBrokerage;
-
     let milestones = [];
     let millionaireAchieved = false;
     let tenMillionAchieved = false;
     let hundredMillionAchieved = false;
 
-    // Loop through each year to calculate balances and returns
-    for (let year = 1; year <= years; year++) {
-        // Calculate Roth IRA balance and returns
-        const previousBalanceRoth = balanceRoth;
-        const endOfYearBalanceRoth = previousBalanceRoth + annualContributionRoth;
-        const returnAmountRoth = endOfYearBalanceRoth * annualReturnRateRoth;
-        balanceRoth = endOfYearBalanceRoth + returnAmountRoth;
+    for (let i = 0; i < accountId; i++) {
+        const accountName = document.getElementById(`accountName${i}`).value;
+        let initialBalance = parseFloat(document.getElementById(`initialBalance${i}`).value);
+        let annualContribution = parseFloat(document.getElementById(`annualContribution${i}`).value);
+        const annualReturnRate = parseFloat(document.getElementById(`annualReturnRate${i}`).value) / 100;
+        const contributionIncrease = parseFloat(document.getElementById(`contributionIncrease${i}`).value) || 0;
 
-        // Calculate 401k balance and returns
-        const previousBalance401k = balance401k;
-        const endOfYearBalance401k = previousBalance401k + annualContribution401k;
-        const returnAmount401k = endOfYearBalance401k * annualReturnRate401k;
-        balance401k = endOfYearBalance401k + returnAmount401k;
+        for (let year = 1; year <= years; year++) {
+            const previousBalance = initialBalance;
+            const endOfYearBalance = previousBalance + annualContribution;
+            const returnAmount = endOfYearBalance * annualReturnRate;
+            initialBalance = endOfYearBalance + returnAmount;
+            annualContribution += contributionIncrease;
 
-        // Calculate Brokerage balance and returns
-        const previousBalanceBrokerage = balanceBrokerage;
-        const endOfYearBalanceBrokerage = previousBalanceBrokerage + annualContributionBrokerageCurrent;
-        const returnAmountBrokerage = endOfYearBalanceBrokerage * annualReturnRateBrokerage;
-        balanceBrokerage = endOfYearBalanceBrokerage + returnAmountBrokerage;
-        annualContributionBrokerageCurrent += contributionIncreaseBrokerage;
+            const totalAnnualReturns = returnAmount;
+            const totalAnnualContributions = annualContribution;
+            const totalMonthlyContributions = totalAnnualContributions / 12;
+            const totalBalance = initialBalance;
 
-        // Calculate total annual returns and contributions
-        const totalAnnualReturns = returnAmountRoth + returnAmount401k + returnAmountBrokerage;
-        const totalAnnualContributions = annualContributionRoth + annualContribution401k + annualContributionBrokerageCurrent;
-        const totalMonthlyContributions = totalAnnualContributions / 12;
-        const totalBalance = balanceRoth + balance401k + balanceBrokerage;
+            const rowClass = (year % 5 === 0) ? 'milestone' : '';
+            data.push([
+                startAge + year - 1,
+                startAge + year - 1,
+                accountName,
+                Math.round(totalBalance).toLocaleString(),
+                `<span class="positive">+${Math.round(totalAnnualReturns).toLocaleString()}</span>`,
+                Math.round(totalAnnualContributions).toLocaleString(),
+                Math.round(totalMonthlyContributions).toLocaleString(),
+                `<span class="highlight">+${Math.round(totalBalance).toLocaleString()}</span>`,
+                rowClass
+            ]);
 
-        // Determine row class for milestones
-        const rowClass = (year % 5 === 0) ? 'milestone' : '';
-
-        // Append data for the current year
-        data.push([
-            startAge + year - 1,
-            startAge + year - 1,
-            Math.round(balanceRoth).toLocaleString(),
-            Math.round(balance401k).toLocaleString(),
-            Math.round(balanceBrokerage).toLocaleString(),
-            `<span class="positive">+${Math.round(totalAnnualReturns).toLocaleString()}</span>`,
-            Math.round(totalAnnualContributions).toLocaleString(),
-            Math.round(totalMonthlyContributions).toLocaleString(),
-            `<span class="highlight">+${Math.round(totalBalance).toLocaleString()}</span>`,
-            rowClass
-        ]);
-
-        // Track milestones (e.g., millionaire, 10 million, 100 million, etc.)
-        if (!millionaireAchieved && totalBalance >= 1000000) {
-            milestones.push(`You became a millionaire at age ${startAge + year - 1}`);
-            millionaireAchieved = true;
-        } else if (!tenMillionAchieved && totalBalance >= 10000000) {
-            milestones.push(`You reached 10 million at age ${startAge + year - 1}`);
-            tenMillionAchieved = true;
-        } else if (!hundredMillionAchieved && totalBalance >= 100000000) {
-            milestones.push(`You reached 100 million at age ${startAge + year - 1}`);
-            hundredMillionAchieved = true;
+            if (!millionaireAchieved && totalBalance >= 1000000) {
+                milestones.push(`You became a millionaire at age ${startAge + year - 1}`);
+                millionaireAchieved = true;
+            } else if (!tenMillionAchieved && totalBalance >= 10000000) {
+                milestones.push(`You reached 10 million at age ${startAge + year - 1}`);
+                tenMillionAchieved = true;
+            } else if (!hundredMillionAchieved && totalBalance >= 100000000) {
+                milestones.push(`You reached 100 million at age ${startAge + year - 1}`);
+                hundredMillionAchieved = true;
+            }
         }
     }
 
-    // Populate the results table
     const resultTableBody = document.getElementById('resultTableBody');
     resultTableBody.innerHTML = '';
 
     data.forEach(row => {
         const tr = document.createElement('tr');
-        if (row[9]) tr.classList.add(row[9]);
-        row.slice(0, 9).forEach(cell => {
+        if (row[8]) tr.classList.add(row[8]);
+        row.slice(0, 8).forEach(cell => {
             const td = document.createElement('td');
             td.innerHTML = cell;
             tr.appendChild(td);
@@ -104,7 +118,6 @@ function calculateGrowth() {
         resultTableBody.appendChild(tr);
     });
 
-    // Populate the achievements section
     const achievementsList = document.getElementById('achievementsList');
     achievementsList.innerHTML = '';
     milestones.forEach(milestone => {
@@ -117,9 +130,17 @@ function calculateGrowth() {
 
 function generatePDF() {
     const { jsPDF } = window.jspdf;
-    html2canvas(document.body).then(canvas => {
-        const pdf = new jsPDF('p', 'pt', 'a4');
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-        pdf.save('financial_growth_calculator.pdf');
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    doc.html(document.body, {
+        callback: function (doc) {
+            doc.save('financial_growth_calculator.pdf');
+        },
+        x: 10,
+        y: 10,
+        width: 190,
+        windowWidth: 1024,
+        autoPaging: 'text',
+        html2canvas: { scale: 0.5 }
     });
 }
