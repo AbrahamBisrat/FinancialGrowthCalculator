@@ -14,6 +14,7 @@ function addInitialAccounts() {
 function addAccount(name = '', initialBalance = '', annualContribution = '', annualReturnRate = '', contributionIncrease = '') {
     const accountSection = document.createElement('div');
     accountSection.classList.add('account-section');
+    accountSection.id = `account${accountId}`;
     accountSection.innerHTML = `
         <h4 class="section-title">Account ${accountId + 1} <span class="account-remove-btn" onclick="removeAccount(${accountId})">Remove</span></h4>
         <div class="row">
@@ -132,15 +133,25 @@ function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    doc.html(document.body, {
-        callback: function (doc) {
-            doc.save('financial_growth_calculator.pdf');
-        },
-        x: 10,
-        y: 10,
-        width: 190,
-        windowWidth: 1024,
-        autoPaging: 'text',
-        html2canvas: { scale: 0.5 }
+    html2canvas(document.body, {
+        scale: 2
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 210;
+        const pageHeight = 297;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            doc.addPage();
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        doc.save('financial_growth_calculator.pdf');
     });
 }

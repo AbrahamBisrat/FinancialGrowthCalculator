@@ -14,7 +14,7 @@
         .card-panel { padding: 20px; margin-bottom: 20px; }
         .input-field input { font-size: 1.2rem; }
         .btn-container { display: flex; justify-content: center; margin-top: 20px; }
-        .calculate-btn, .generate-pdf-btn { 
+        .calculate-btn, .generate-pdf-btn, .add-account-btn { 
             font-size: 20px; 
             padding: 15px 30px; 
             background-color: #4CAF50; 
@@ -24,8 +24,8 @@
             margin: 10px; 
             transition: background-color 0.3s, transform 0.3s; 
         }
-        .calculate-btn:hover, .generate-pdf-btn:hover { background-color: #45a049; }
-        .calculate-btn:active, .generate-pdf-btn:active { transform: scale(0.98); }
+        .calculate-btn:hover, .generate-pdf-btn:hover, .add-account-btn:hover { background-color: #45a049; }
+        .calculate-btn:active, .generate-pdf-btn:active, .add-account-btn:active { transform: scale(0.98); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
         th, td { padding: 12px 15px; text-align: right; border: 1px solid #ddd; }
         th { background-color: #4CAF50; color: white; }
@@ -49,7 +49,7 @@
         .account-remove-btn { color: red; cursor: pointer; }
         @media (max-width: 600px) {
             th, td { padding: 8px 10px; }
-            .calculate-btn, .generate-pdf-btn { font-size: 16px; padding: 10px 20px; }
+            .calculate-btn, .generate-pdf-btn, .add-account-btn { font-size: 16px; padding: 10px 20px; }
             .section-title { font-size: 20px; }
         }
     </style>
@@ -65,7 +65,7 @@
                     <!-- Placeholder for dynamically added accounts -->
                 </div>
                 <div class="row center-align btn-container">
-                    <button type="button" class="btn waves-effect waves-light" onclick="addAccount()">Add Account</button>
+                    <button type="button" class="add-account-btn btn waves-effect waves-light" onclick="addAccount()">Add Account</button>
                 </div>
                 <h4 class="section-title">Common Parameters</h4>
                 <div class="row">
