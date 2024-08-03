@@ -3,14 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function calculateGrowth() {
+    // Retrieve input values for various accounts
     const initialBalanceRoth = parseFloat(document.getElementById('initialBalanceRoth').value);
     const annualContributionRoth = parseFloat(document.getElementById('annualContributionRoth').value);
     const annualReturnRateRoth = parseFloat(document.getElementById('annualReturnRateRoth').value) / 100;
-
+    
     const initialBalance401k = parseFloat(document.getElementById('initialBalance401k').value);
     const annualContribution401k = parseFloat(document.getElementById('annualContribution401k').value);
     const annualReturnRate401k = parseFloat(document.getElementById('annualReturnRate401k').value) / 100;
-
+    
     const initialBalanceBrokerage = parseFloat(document.getElementById('initialBalanceBrokerage').value);
     const annualContributionBrokerage = parseFloat(document.getElementById('annualContributionBrokerage').value);
     const contributionIncreaseBrokerage = parseFloat(document.getElementById('contributionIncreaseBrokerage').value);
@@ -21,12 +22,6 @@ function calculateGrowth() {
     const years = endAge - startAge;
 
     let data = [];
-    let labels = [];
-    let rothData = [];
-    let k401Data = [];
-    let brokerageData = [];
-    let totalData = [];
-
     let balanceRoth = initialBalanceRoth;
     let balance401k = initialBalance401k;
     let balanceBrokerage = initialBalanceBrokerage;
@@ -37,34 +32,37 @@ function calculateGrowth() {
     let tenMillionAchieved = false;
     let hundredMillionAchieved = false;
 
+    // Loop through each year to calculate balances and returns
     for (let year = 1; year <= years; year++) {
+        // Calculate Roth IRA balance and returns
         const previousBalanceRoth = balanceRoth;
         const endOfYearBalanceRoth = previousBalanceRoth + annualContributionRoth;
         const returnAmountRoth = endOfYearBalanceRoth * annualReturnRateRoth;
         balanceRoth = endOfYearBalanceRoth + returnAmountRoth;
 
+        // Calculate 401k balance and returns
         const previousBalance401k = balance401k;
         const endOfYearBalance401k = previousBalance401k + annualContribution401k;
         const returnAmount401k = endOfYearBalance401k * annualReturnRate401k;
         balance401k = endOfYearBalance401k + returnAmount401k;
 
+        // Calculate Brokerage balance and returns
         const previousBalanceBrokerage = balanceBrokerage;
         const endOfYearBalanceBrokerage = previousBalanceBrokerage + annualContributionBrokerageCurrent;
         const returnAmountBrokerage = endOfYearBalanceBrokerage * annualReturnRateBrokerage;
         balanceBrokerage = endOfYearBalanceBrokerage + returnAmountBrokerage;
         annualContributionBrokerageCurrent += contributionIncreaseBrokerage;
 
+        // Calculate total annual returns and contributions
         const totalAnnualReturns = returnAmountRoth + returnAmount401k + returnAmountBrokerage;
         const totalAnnualContributions = annualContributionRoth + annualContribution401k + annualContributionBrokerageCurrent;
         const totalMonthlyContributions = totalAnnualContributions / 12;
         const totalBalance = balanceRoth + balance401k + balanceBrokerage;
 
-        labels.push(startAge + year - 1);
-        rothData.push(Math.round(balanceRoth));
-        k401Data.push(Math.round(balance401k));
-        brokerageData.push(Math.round(balanceBrokerage));
-        totalData.push(Math.round(totalBalance));
+        // Determine row class for milestones
+        const rowClass = (year % 5 === 0) ? 'milestone' : '';
 
+        // Append data for the current year
         data.push([
             startAge + year - 1,
             startAge + year - 1,
@@ -75,9 +73,10 @@ function calculateGrowth() {
             Math.round(totalAnnualContributions).toLocaleString(),
             Math.round(totalMonthlyContributions).toLocaleString(),
             `<span class="highlight">+${Math.round(totalBalance).toLocaleString()}</span>`,
-            year % 5 === 0 ? 'milestone' : ''
+            rowClass
         ]);
 
+        // Track milestones (e.g., millionaire, 10 million, 100 million, etc.)
         if (!millionaireAchieved && totalBalance >= 1000000) {
             milestones.push(`You became a millionaire at age ${startAge + year - 1}`);
             millionaireAchieved = true;
@@ -90,6 +89,7 @@ function calculateGrowth() {
         }
     }
 
+    // Populate the results table
     const resultTableBody = document.getElementById('resultTableBody');
     resultTableBody.innerHTML = '';
 
@@ -104,6 +104,7 @@ function calculateGrowth() {
         resultTableBody.appendChild(tr);
     });
 
+    // Populate the achievements section
     const achievementsList = document.getElementById('achievementsList');
     achievementsList.innerHTML = '';
     milestones.forEach(milestone => {
@@ -111,66 +112,6 @@ function calculateGrowth() {
         li.classList.add('collection-item', 'achievement-item');
         li.innerHTML = `<span>${milestone}</span>`;
         achievementsList.appendChild(li);
-    });
-
-    const ctx = document.getElementById('growthChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Roth IRA',
-                    data: rothData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false
-                },
-                {
-                    label: '401k',
-                    data: k401Data,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    fill: false
-                },
-                {
-                    label: 'Brokerage',
-                    data: brokerageData,
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    fill: false
-                },
-                {
-                    label: 'Total Balance',
-                    data: totalData,
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    fill: false
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top'
-                },
-                title: {
-                    display: true,
-                    text: 'Financial Growth Over Time'
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Age'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Balance ($)'
-                    }
-                }
-            }
-        }
     });
 }
 
