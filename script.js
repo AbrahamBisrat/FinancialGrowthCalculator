@@ -64,7 +64,7 @@ function calculateGrowth() {
 
         // Append data for the current year
         data.push([
-            startAge + year - 1,
+            year,
             startAge + year - 1,
             Math.round(balanceRoth).toLocaleString(),
             Math.round(balance401k).toLocaleString(),
