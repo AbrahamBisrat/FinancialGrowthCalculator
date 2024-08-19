@@ -25,6 +25,16 @@ body {
     margin-top: 20px
 }
 
+.button {
+    border: none;
+    color: white;
+    padding: 1% 2%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
 .calculate-btn,
 .generate-pdf-btn,
 .add-account-btn,
