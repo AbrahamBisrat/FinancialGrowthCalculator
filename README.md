@@ -49,4 +49,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Inspired by the quote from Albert Einstein: "Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it."
+- Inspired by the quote from Albert Einstein: "Compound interest is the eighth wonder of the world."
