@@ -111,9 +111,10 @@ function calculateGrowth() {
   let accountBalances = accounts.map(acc => [acc.initial]);
   let accountContributions = accounts.map(acc => [0]);
   let milestones = [];
-  let millionaireAchieved = false;
-  let tenMillionAchieved = false;
-  let hundredMillionAchieved = false;
+  let milestoneRows = {};
+  let milestoneThresholds = [100000, 1000000, 10000000, 100000000];
+  let milestoneLabels = ["$100k", "$1M", "$10M", "$100M"];
+  let milestoneAchieved = [false, false, false, false];
 
   // For each year, calculate balances
   for (let year = 1; year < years; year++) {
@@ -144,15 +145,14 @@ function calculateGrowth() {
   // Prepare table data
   const resultTableBody = document.getElementById('resultTableBody');
   resultTableBody.innerHTML = '';
-  for (let year = 1; year < years; year++) { // start from 1, skip year 0
+  for (let year = 0; year < years; year++) { // include year 0
     const age = startAge + year;
     let row = document.createElement('tr');
-    if ((year + 1) % 5 === 0) row.classList.add('milestone');
     let totalAnnualReturns = 0;
     let totalAnnualContributions = 0;
     let totalBalance = 0;
     // Year, Age
-    row.innerHTML += `<td>${year}</td><td>${age}</td>`;
+    row.innerHTML += `<td>${year + 1}</td><td>${age}</td>`;
     // Account balances
     accounts.forEach((acc, i) => {
       let bal = accountBalances[i][year] || 0;
@@ -171,20 +171,18 @@ function calculateGrowth() {
     // Monthly Contributions
     row.innerHTML += `<td>${Math.round(totalAnnualContributions / 12).toLocaleString()}</td>`;
     // Total Balance
-    row.innerHTML += `<td class="highlight">${Math.round(totalBalance).toLocaleString()}</td>`;
-    resultTableBody.appendChild(row);
+    row.innerHTML += `<td class="highlight">$${Math.round(totalBalance).toLocaleString()}</td>`;
 
     // Milestones
-    if (!millionaireAchieved && totalBalance >= 1000000) {
-      milestones.push(`You became a millionaire at age ${age}`);
-      millionaireAchieved = true;
-    } else if (!tenMillionAchieved && totalBalance >= 10000000) {
-      milestones.push(`You reached 10 million at age ${age}`);
-      tenMillionAchieved = true;
-    } else if (!hundredMillionAchieved && totalBalance >= 100000000) {
-      milestones.push(`You reached 100 million at age ${age}`);
-      hundredMillionAchieved = true;
+    for (let m = 0; m < milestoneThresholds.length; m++) {
+      if (!milestoneAchieved[m] && totalBalance >= milestoneThresholds[m]) {
+        milestones.push(`You reached ${milestoneLabels[m]} at age ${age}`);
+        milestoneRows[year] = true;
+        milestoneAchieved[m] = true;
+      }
     }
+    if (milestoneRows[year]) row.classList.add('milestone');
+    resultTableBody.appendChild(row);
   }
 
   // Achievements
@@ -198,22 +196,96 @@ function calculateGrowth() {
   });
 
   // Chart
-  const labels = Array.from({length: years - 1}, (_, i) => `${startAge + i + 1}`);
+  const labels = Array.from({length: years}, (_, i) => `${startAge + i}`);
   const datasets = accounts.map((acc, i) => ({
     label: acc.type,
-    data: accountBalances[i].slice(1),
+    data: accountBalances[i],
     borderColor: `hsl(${i * 80}, 70%, 50%)`,
     fill: false,
     tension: 0.2
   }));
   renderGrowthChart(labels, datasets);
+
+  // Show final total balance below the table
+  const finalTotalDiv = document.getElementById('finalTotalBalance');
+  if (years > 0) {
+    const finalTotal = accountBalances.reduce((sum, arr) => sum + (arr[years-1] || 0), 0);
+    finalTotalDiv.style.display = 'block';
+    finalTotalDiv.innerHTML = `Total Accumulated Wealth: <span style='color:#1b5e20;'>$${Math.round(finalTotal).toLocaleString()}</span>`;
+  } else {
+    finalTotalDiv.style.display = 'none';
+  }
 }
 
 function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    html2canvas(document.body).then(canvas => {
-        const pdf = new jsPDF('p', 'pt', 'a4');
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-        pdf.save('financial_growth_calculator.pdf');
+  const pdfBtn = document.querySelector('.generate-pdf-btn');
+  if (!pdfBtn) return;
+  pdfBtn.disabled = true;
+  pdfBtn.innerHTML = '<i class="material-icons left">hourglass_empty</i>Generating...';
+
+  function doGenerate() {
+    const doc = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    const chartCanvas = document.getElementById('growthChart');
+    const table = document.querySelector('.results-table');
+
+    // Helper to add a title
+    function addTitle() {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.text('Financial Growth Report', 40, 50);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Generated on: ' + new Date().toLocaleString(), 40, 70);
+    }
+
+    // Render chart to image and add to PDF
+    html2canvas(chartCanvas, { backgroundColor: '#fff', scale: 2 }).then(chartCanvasImg => {
+      const chartImgData = chartCanvasImg.toDataURL('image/png');
+      addTitle();
+      doc.addImage(chartImgData, 'PNG', 40, 90, 500, 180);
+
+      // Prepare table data for autoTable
+      const headerCells = Array.from(table.querySelectorAll('thead tr th'));
+      const headers = headerCells.map(th => th.innerText);
+      const bodyRows = Array.from(table.querySelectorAll('tbody tr'));
+      const body = bodyRows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.innerText));
+
+      // Add table using autoTable
+      if (doc.autoTable) {
+        doc.autoTable({
+          head: [headers],
+          body: body,
+          startY: 290,
+          theme: 'grid',
+          headStyles: { fillColor: [34, 51, 77], textColor: 255, fontStyle: 'bold', fontSize: 11 },
+          bodyStyles: { fontSize: 10, textColor: 34 },
+          styles: { cellPadding: 4, overflow: 'linebreak', halign: 'right', valign: 'middle', lineColor: [191,201,209], lineWidth: 0.7 },
+          alternateRowStyles: { fillColor: [245, 247, 250] },
+          margin: { left: 40, right: 40 },
+          tableWidth: 'auto',
+        });
+        doc.save('FinancialGrowthReport.pdf');
+        pdfBtn.disabled = false;
+        pdfBtn.innerHTML = '<i class="material-icons left">download</i>Generate PDF';
+      } else {
+        alert('PDF table export is not available.');
+        pdfBtn.disabled = false;
+        pdfBtn.innerHTML = '<i class="material-icons left">download</i>Generate PDF';
+      }
+    }).catch(() => {
+      alert('Failed to generate chart image for PDF.');
+      pdfBtn.disabled = false;
+      pdfBtn.innerHTML = '<i class="material-icons left">download</i>Generate PDF';
     });
+  }
+
+  // Check if autoTable is loaded, if not, load it
+  if (!window.jspdf || !window.jspdf.jsPDF || !window.jspdf.jsPDF.prototype.autoTable) {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.0/jspdf.plugin.autotable.min.js';
+    script.onload = doGenerate;
+    document.body.appendChild(script);
+  } else {
+    doGenerate();
+  }
 }

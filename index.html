@@ -6,13 +6,85 @@
     <title>Financial Growth Calculator</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-        .container { padding: 20px; max-width: 1000px; margin: auto; }
-        .card-panel { padding: 20px; }
-        .input-field input { font-size: 1.2rem; }
+        body {
+            font-family: 'IBM Plex Sans', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            padding-left: 10%;
+            padding-right: 10%;
+        }
+        .card-panel {
+            padding: 32px 32px 24px 32px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.08), 0 1.5px 4px 0 rgba(44, 62, 80, 0.04);
+            border: 1.5px solid #e0e4ea;
+        }
+        .input-field {
+            margin-top: 1.7rem;
+        }
+        .input-field input {
+            font-size: 1.13rem;
+            font-family: 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            font-weight: 500;
+            padding: 1.5rem 1.1rem 0.7rem 1.1rem;
+            border-radius: 10px;
+            background: #f8f8fa;
+            border: 1.5px solid #e0e3e8;
+            box-shadow: 0 1.5px 6px 0 rgba(44,62,80,0.04);
+            box-sizing: border-box;
+            height: auto;
+            color: #22334d;
+            letter-spacing: 0.01em;
+            text-align: right;
+        }
+        .input-field input:focus {
+            border-color: #256029;
+            box-shadow: 0 0 0 2px #b7d6c2;
+        }
+        .input-field input[type='text'] {
+            text-align: left;
+        }
+        .section-title, .achievements-header, h1, h2, h4 {
+            color: #22334d;
+            font-family: 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        .calculate-btn, .generate-pdf-btn, #addAccountBtn, #sampleTemplateBtn {
+            background: #256029;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 2px 8px 0 rgba(44, 62, 80, 0.07);
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            height: 48px;
+            min-width: 160px;
+            font-size: 1.08rem;
+        }
+        .calculate-btn i.material-icons,
+        .generate-pdf-btn i.material-icons,
+        #addAccountBtn i.material-icons,
+        #sampleTemplateBtn i.material-icons {
+            font-size: 22px;
+            margin-right: 8px;
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+        .calculate-btn:hover, .generate-pdf-btn:hover, #addAccountBtn:hover, #sampleTemplateBtn:hover {
+            background: #388e3c;
+        }
         .btn-container { display: flex; justify-content: center; margin-top: 20px; }
         .calculate-btn, .generate-pdf-btn { 
             font-size: 20px; 
@@ -26,11 +98,36 @@
         }
         .calculate-btn:hover, .generate-pdf-btn:hover { background-color: #45a049; }
         .calculate-btn:active, .generate-pdf-btn:active { transform: scale(0.98); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
-        th, td { padding: 12px 15px; text-align: right; border: 1px solid #ddd; }
-        th { background-color: #4CAF50; color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        tr:hover { background-color: #ddd; }
+        table, th, td {
+            font-family: 'IBM Plex Sans', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            font-size: 1.08rem;
+        }
+        th, td {
+            padding: 14px 22px;
+            font-size: 1rem;
+            border-bottom: 1.5px solid #e0e4ea;
+        }
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        table tr:nth-child(even) {
+            background-color: #f6f8fa;
+        }
+        table tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        table tr:hover {
+            background-color: #e3f0e8;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #f3f4f6;
+            color: #22334d;
+            font-weight: 600;
+            box-shadow: none;
+        }
         .milestone { background-color: #ffeb3b; }
         .positive { color: green; font-weight: bold; }
         .center-align { text-align: center; }
@@ -43,8 +140,67 @@
         .quote-container { margin-top: 50px; padding: 20px; background-color: #f9f9f9; border-left: 5px solid #ff9800; border-radius: 10px; }
         .quote { font-family: 'Merriweather', serif; font-style: italic; color: #616161; font-size: 1.5em; }
         .quote-author { margin-top: 10px; text-align: right; font-weight: bold; color: #4CAF50; }
-        .summary-container { overflow-x: auto; }
+        .summary-container {
+            overflow-x: auto;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .section-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
+        table {
+            width: 100%;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1.5px solid #e0e4ea;
+            border-radius: 12px;
+            border-collapse: separate;
+            margin-top: 20px;
+            background-color: white;
+        }
+        .achievements-section {
+            background: #f8f8fa;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07);
+            padding: 32px 24px 24px 24px;
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+        }
+        .achievements-header {
+            color: #256029;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: 0.01em;
+        }
+        #achievementsList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            background: #e8f5e9;
+            border-radius: 8px;
+            margin: 12px 0;
+            padding: 16px 20px 16px 16px;
+            border-left: 6px solid #4CAF50;
+            box-shadow: 0 1px 4px 0 rgba(44,62,80,0.04);
+            font-size: 1.13rem;
+            font-weight: 500;
+            color: #256029;
+        }
+        .achievement-item span {
+            font-weight: 600;
+            color: #256029;
+            margin-left: 8px;
+        }
+        .achievement-item:before {
+            content: '\1F389';
+            font-size: 1.3em;
+            margin-right: 12px;
+        }
         @media (max-width: 600px) {
             th, td { padding: 8px 10px; }
             .calculate-btn, .generate-pdf-btn { font-size: 16px; padding: 10px 20px; }
@@ -56,71 +212,71 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="card-panel z-depth-2">
-            <h1 class="center-align">Financial Growth Calculator</h1>
-            <form id="calcForm">
-                <div id="accountsContainer">
-                    <!-- Dynamic account forms will be injected here by JS -->
+    <div class="card-panel z-depth-2">
+        <h1 class="center-align">Financial Growth Calculator</h1>
+        <form id="calcForm">
+            <div id="accountsContainer">
+                <!-- Dynamic account forms will be injected here by JS -->
+            </div>
+            <div class="row center-align btn-container">
+                <button type="button" class="btn green lighten-1 waves-effect waves-light" id="addAccountBtn" style="margin-bottom: 20px; margin-right: 10px;">
+                    <i class="material-icons left">add</i>Add Account
+                </button>
+                <button type="button" class="btn blue lighten-1 waves-effect waves-light" id="sampleTemplateBtn" style="margin-bottom: 20px;">
+                    <i class="material-icons left">assignment</i>Sample Template
+                </button>
+            </div>
+            <h4 class="section-title">Common Parameters</h4>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <input type="number" id="startAge" value="27" class="validate">
+                    <label for="startAge">Starting Age</label>
                 </div>
-                <div class="row center-align btn-container">
-                    <button type="button" class="btn green lighten-1 waves-effect waves-light" id="addAccountBtn" style="margin-bottom: 20px; margin-right: 10px;">
-                        <i class="material-icons left">add</i>Add Account
-                    </button>
-                    <button type="button" class="btn blue lighten-1 waves-effect waves-light" id="sampleTemplateBtn" style="margin-bottom: 20px;">
-                        <i class="material-icons left">assignment</i>Sample Template
-                    </button>
+                <div class="input-field col s12 m6">
+                    <input type="number" id="endAge" value="65" class="validate">
+                    <label for="endAge">Ending Age</label>
                 </div>
-                <h4 class="section-title">Common Parameters</h4>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="startAge" value="27" class="validate">
-                        <label for="startAge">Starting Age</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="endAge" value="65" class="validate">
-                        <label for="endAge">Ending Age</label>
-                    </div>
-                </div>
-                <div class="row center-align btn-container">
-                    <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">
-                        <i class="material-icons left">calculate</i>Calculate
-                    </button>
-                </div>
-                <div id="growthChartContainer" style="margin: 40px 0 0 0;">
-                    <canvas id="growthChart" height="80"></canvas>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="row center-align btn-container">
+                <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">
+                    <i class="material-icons left">calculate</i>Calculate
+                </button>
+            </div>
+            <div id="growthChartContainer" style="margin: 40px 0 0 0;">
+                <canvas id="growthChart" height="80"></canvas>
+            </div>
+        </form>
+    </div>
 
-        <div class="card-panel z-depth-2 summary-container">
-            <h2 class="center-align section-title">Results</h2>
-            <table class="striped results-table" style="overflow-x: auto; display: block; max-width: 100%;">
-                <thead style="position: sticky; top: 0; z-index: 2; background: #4CAF50; color: white;">
-                    <tr id="resultsTableHeaderRow">
-                        <!-- Dynamic header will be rendered by JS -->
-                    </tr>
-                </thead>
-                <tbody id="resultTableBody">
-                </tbody>
-            </table>
-            <!-- TODO: Make table columns sortable and add better interactivity -->
-        </div>
+    <div class="card-panel z-depth-2 summary-container">
+        <table class="striped results-table" style="overflow-x: auto; display: block; max-width: 100%;">
+            <thead style="position: sticky; top: 0; z-index: 2; background: #4CAF50; color: white;">
+                <tr id="resultsTableHeaderRow">
+                    <!-- Dynamic header will be rendered by JS -->
+                </tr>
+            </thead>
+            <tbody id="resultTableBody">
+            </tbody>
+        </table>
+        <!-- TODO: Make table columns sortable and add better interactivity -->
+        <div id="finalTotalBalance" style="display: none; margin: 32px auto 0 auto; max-width: 600px; background: #e8f5e9; border-radius: 10px; padding: 24px 32px; text-align: center; font-size: 2rem; font-weight: 700; color: #256029; box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07); letter-spacing: 0.01em;"></div>
+    </div>
 
-        <div class="achievements-section">
-            <h2 class="achievements-header center-align">Achievements</h2>
-            <ul id="achievementsList" class="collection">
-            </ul>
-        </div>
+    <div class="achievements-section">
+        <h2 class="achievements-header center-align">Achievements</h2>
+        <ul id="achievementsList" class="collection">
+        </ul>
+    </div>
 
-        <div class="quote-container">
-            <p class="quote">"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it."</p>
-            <p class="quote-author">- Albert Einstein</p>
-        </div>
+    <div class="quote-container">
+        <p class="quote">"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it."</p>
+        <p class="quote-author">- Albert Einstein</p>
+    </div>
 
-        <div class="row center-align btn-container">
-            <button type="button" class="generate-pdf-btn btn waves-effect waves-light" onclick="generatePDF()">Generate PDF</button>
-        </div>
+    <div class="row center-align btn-container" style="margin-top: 32px;">
+        <button type="button" aria-label="Generate PDF" class="generate-pdf-btn btn waves-effect waves-light" onclick="generatePDF()" style="margin-top: 8px;">
+            <i class="material-icons left">download</i>Generate PDF
+        </button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
