@@ -105,87 +105,84 @@ function renderGrowthChart(labels = [], datasets = []) {
 function calculateGrowth() {
   const startAge = parseInt(document.getElementById('startAge').value);
   const endAge = parseInt(document.getElementById('endAge').value);
-  const years = endAge - startAge + 1;
+  const numYears = endAge - startAge;
 
-  // Prepare per-account arrays for balances
-  let accountBalances = accounts.map(acc => [acc.initial]);
-  let accountContributions = accounts.map(acc => [0]);
-  let milestones = [];
-  let milestoneRows = {};
-  let milestoneThresholds = [100000, 1000000, 10000000, 100000000];
-  let milestoneLabels = ["$100k", "$1M", "$10M", "$100M"];
-  let milestoneAchieved = [false, false, false, false];
+  if (numYears <= 0) {
+    document.getElementById('resultTableBody').innerHTML = '';
+    document.getElementById('finalTotalBalance').style.display = 'none';
+    renderGrowthChart([], []);
+    return;
+  }
 
-  // For each year, calculate balances
-  for (let year = 1; year < years; year++) {
+  let accountBalances = accounts.map(acc => {
+      const balances = new Array(numYears + 1).fill(0);
+      balances[0] = acc.initial;
+      return balances;
+  });
+  
+  let yearlyContributions = accounts.map(() => new Array(numYears + 1).fill(0));
+  
+  for (let year = 1; year <= numYears; year++) {
     accounts.forEach((acc, i) => {
-      let prevBalance = accountBalances[i][year - 1];
-      let prevContribution = accountContributions[i][year - 1];
-      let annualContribution = acc.annual + (acc.increase || 0) * (year - 1);
-      let endOfYearBalance = prevBalance + annualContribution;
-      let returnAmount = endOfYearBalance * (acc.rate / 100);
-      let newBalance = endOfYearBalance + returnAmount;
-      accountBalances[i][year] = newBalance;
-      accountContributions[i][year] = annualContribution;
+      const prevBalance = accountBalances[i][year - 1];
+      const currentContribution = acc.annual + (acc.increase || 0) * (year - 1);
+      yearlyContributions[i][year] = currentContribution;
+      const balanceBeforeReturn = prevBalance + currentContribution;
+      const returnAmount = balanceBeforeReturn * (acc.rate / 100);
+      accountBalances[i][year] = balanceBeforeReturn + returnAmount;
     });
   }
 
-  // Render table header dynamically
   const headerRow = document.getElementById('resultsTableHeaderRow');
-  headerRow.innerHTML = '';
-  headerRow.innerHTML += '<th>Year</th><th>Age</th>';
+  headerRow.innerHTML = `<th>Year</th><th>Age</th>`;
   accounts.forEach(acc => {
     headerRow.innerHTML += `<th>${acc.type} Balance ($)</th>`;
   });
-  headerRow.innerHTML += '<th class="highlight">Annual Returns ($)</th>';
-  headerRow.innerHTML += '<th>Annual Contributions ($)</th>';
-  headerRow.innerHTML += '<th>Monthly Contributions ($)</th>';
-  headerRow.innerHTML += '<th class="highlight">Total Balance ($)</th>';
+  headerRow.innerHTML += `<th class="highlight">Annual Returns ($)</th><th>Annual Contributions ($)</th><th>Monthly Contributions ($)</th><th class="highlight">Total Balance ($)</th>`;
 
-  // Prepare table data
   const resultTableBody = document.getElementById('resultTableBody');
   resultTableBody.innerHTML = '';
-  for (let year = 0; year < years; year++) { // include year 0
-    const age = startAge + year;
-    let row = document.createElement('tr');
-    let totalAnnualReturns = 0;
-    let totalAnnualContributions = 0;
-    let totalBalance = 0;
-    // Year, Age
-    row.innerHTML += `<td>${year + 1}</td><td>${age}</td>`;
-    // Account balances
-    accounts.forEach((acc, i) => {
-      let bal = accountBalances[i][year] || 0;
-      row.innerHTML += `<td>${Math.round(bal).toLocaleString()}</td>`;
-      totalBalance += bal;
-      if (year > 0) {
-        let prev = accountBalances[i][year - 1] || 0;
-        totalAnnualReturns += bal - prev - (accountContributions[i][year] || 0);
-        totalAnnualContributions += accountContributions[i][year] || 0;
-      }
-    });
-    // Annual Returns
-    row.innerHTML += `<td class="highlight">+${Math.round(totalAnnualReturns).toLocaleString()}</td>`;
-    // Annual Contributions
-    row.innerHTML += `<td>${Math.round(totalAnnualContributions).toLocaleString()}</td>`;
-    // Monthly Contributions
-    row.innerHTML += `<td>${Math.round(totalAnnualContributions / 12).toLocaleString()}</td>`;
-    // Total Balance
-    row.innerHTML += `<td class="highlight">$${Math.round(totalBalance).toLocaleString()}</td>`;
+  let milestones = [];
+  let achievedMilestones = new Set();
 
-    // Milestones
-    for (let m = 0; m < milestoneThresholds.length; m++) {
-      if (!milestoneAchieved[m] && totalBalance >= milestoneThresholds[m]) {
-        milestones.push(`You reached ${milestoneLabels[m]} at age ${age}`);
-        milestoneRows[year] = true;
-        milestoneAchieved[m] = true;
-      }
+  for (let year = 1; year <= numYears; year++) {
+    const age = startAge + year;
+    const row = document.createElement('tr');
+    
+    let totalBalanceForYear = 0;
+    let totalContributionsForYear = 0;
+    let totalReturnsForYear = 0;
+
+    accounts.forEach((acc, i) => {
+      const endBalance = accountBalances[i][year];
+      const startBalance = accountBalances[i][year - 1];
+      const contribution = yearlyContributions[i][year];
+      totalBalanceForYear += endBalance;
+      totalContributionsForYear += contribution;
+      totalReturnsForYear += (endBalance - startBalance - contribution);
+    });
+    
+    let rowHTML = `<td>${year}</td><td>${age}</td>`;
+    accounts.forEach((_, i) => {
+      rowHTML += `<td>${Math.round(accountBalances[i][year]).toLocaleString()}</td>`;
+    });
+    rowHTML += `<td class="highlight">+${Math.round(totalReturnsForYear).toLocaleString()}</td>`;
+    rowHTML += `<td>${Math.round(totalContributionsForYear).toLocaleString()}</td>`;
+    rowHTML += `<td>${Math.round(totalContributionsForYear / 12).toLocaleString()}</td>`;
+    rowHTML += `<td class="highlight">$${Math.round(totalBalanceForYear).toLocaleString()}</td>`;
+    row.innerHTML = rowHTML;
+
+    const milestoneThresholds = { 100000: "$100k", 1000000: "$1M", 10000000: "$10M", 100000000: "$100M" };
+    for (const threshold in milestoneThresholds) {
+        if (totalBalanceForYear >= threshold && !achievedMilestones.has(threshold)) {
+            milestones.push(`You reached ${milestoneThresholds[threshold]} at age ${age}`);
+            row.classList.add('milestone');
+            achievedMilestones.add(threshold);
+        }
     }
-    if (milestoneRows[year]) row.classList.add('milestone');
     resultTableBody.appendChild(row);
   }
 
-  // Achievements
   const achievementsList = document.getElementById('achievementsList');
   achievementsList.innerHTML = '';
   milestones.forEach(milestone => {
@@ -195,8 +192,7 @@ function calculateGrowth() {
     achievementsList.appendChild(li);
   });
 
-  // Chart
-  const labels = Array.from({length: years}, (_, i) => `${startAge + i}`);
+  const chartLabels = Array.from({length: numYears + 1}, (_, i) => `${startAge + i}`);
   const datasets = accounts.map((acc, i) => ({
     label: acc.type,
     data: accountBalances[i],
@@ -204,17 +200,12 @@ function calculateGrowth() {
     fill: false,
     tension: 0.2
   }));
-  renderGrowthChart(labels, datasets);
+  renderGrowthChart(chartLabels, datasets);
 
-  // Show final total balance below the table
   const finalTotalDiv = document.getElementById('finalTotalBalance');
-  if (years > 0) {
-    const finalTotal = accountBalances.reduce((sum, arr) => sum + (arr[years-1] || 0), 0);
-    finalTotalDiv.style.display = 'block';
-    finalTotalDiv.innerHTML = `Total Accumulated Wealth: <span style='color:#1b5e20;'>$${Math.round(finalTotal).toLocaleString()}</span>`;
-  } else {
-    finalTotalDiv.style.display = 'none';
-  }
+  const finalTotal = accountBalances.reduce((sum, arr) => sum + (arr[numYears] || 0), 0);
+  finalTotalDiv.style.display = 'block';
+  finalTotalDiv.innerHTML = `Total Accumulated Wealth: <span style='color:#1b5e20;'>$${Math.round(finalTotal).toLocaleString()}</span><br><span style='font-size:1.1rem;font-weight:400;color:#388e3c;'>This is your reward for all your investing!</span>`;
 }
 
 function generatePDF() {
