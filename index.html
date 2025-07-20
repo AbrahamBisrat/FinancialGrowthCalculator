@@ -53,64 +53,24 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="card-panel z-depth-2">
             <h1 class="center-align">Financial Growth Calculator</h1>
             <form id="calcForm">
-                <h4 class="section-title">Roth IRA</h4>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="initialBalanceRoth" value="0" class="validate">
-                        <label for="initialBalanceRoth">Initial Balance ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="annualContributionRoth" value="6000" class="validate">
-                        <label for="annualContributionRoth">Annual Contribution ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" step="0.01" id="annualReturnRateRoth" value="7" class="validate">
-                        <label for="annualReturnRateRoth">Annual Return Rate (%)</label>
-                    </div>
+                <div id="accountsContainer">
+                    <!-- Dynamic account forms will be injected here by JS -->
                 </div>
-                
-                <h4 class="section-title">401k</h4>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="initialBalance401k" value="10000" class="validate">
-                        <label for="initialBalance401k">Initial Balance ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="annualContribution401k" value="19500" class="validate">
-                        <label for="annualContribution401k">Annual Contribution ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" step="0.01" id="annualReturnRate401k" value="7" class="validate">
-                        <label for="annualReturnRate401k">Annual Return Rate (%)</label>
-                    </div>
+                <div class="row center-align btn-container">
+                    <button type="button" class="btn green lighten-1 waves-effect waves-light" id="addAccountBtn" style="margin-bottom: 20px; margin-right: 10px;">
+                        <i class="material-icons left">add</i>Add Account
+                    </button>
+                    <button type="button" class="btn blue lighten-1 waves-effect waves-light" id="sampleTemplateBtn" style="margin-bottom: 20px;">
+                        <i class="material-icons left">assignment</i>Sample Template
+                    </button>
                 </div>
-                
-                <h4 class="section-title">Brokerage</h4>
-                <div class="row">
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="initialBalanceBrokerage" value="5000" class="validate">
-                        <label for="initialBalanceBrokerage">Initial Balance ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="annualContributionBrokerage" value="10000" class="validate">
-                        <label for="annualContributionBrokerage">Annual Contribution ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" id="contributionIncreaseBrokerage" value="500" class="validate">
-                        <label for="contributionIncreaseBrokerage">Annual Contribution Increase ($)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input type="number" step="0.01" id="annualReturnRateBrokerage" value="7" class="validate">
-                        <label for="annualReturnRateBrokerage">Annual Return Rate (%)</label>
-                    </div>
-                </div>
-                
                 <h4 class="section-title">Common Parameters</h4>
                 <div class="row">
                     <div class="input-field col s12 m6">
@@ -122,32 +82,29 @@
                         <label for="endAge">Ending Age</label>
                     </div>
                 </div>
-
                 <div class="row center-align btn-container">
-                    <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">Calculate</button>
+                    <button type="button" class="calculate-btn btn waves-effect waves-light" onclick="calculateGrowth()">
+                        <i class="material-icons left">calculate</i>Calculate
+                    </button>
+                </div>
+                <div id="growthChartContainer" style="margin: 40px 0 0 0;">
+                    <canvas id="growthChart" height="80"></canvas>
                 </div>
             </form>
         </div>
 
         <div class="card-panel z-depth-2 summary-container">
             <h2 class="center-align section-title">Results</h2>
-            <table class="striped">
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Age</th>
-                        <th>Roth IRA Balance ($)</th>
-                        <th>401k Balance ($)</th>
-                        <th>Brokerage Account Balance ($)</th>
-                        <th class="highlight">Annual Returns ($)</th>
-                        <th>Annual Contributions ($)</th>
-                        <th>Monthly Contributions ($)</th>
-                        <th class="highlight">Total Balance ($)</th>
+            <table class="striped results-table" style="overflow-x: auto; display: block; max-width: 100%;">
+                <thead style="position: sticky; top: 0; z-index: 2; background: #4CAF50; color: white;">
+                    <tr id="resultsTableHeaderRow">
+                        <!-- Dynamic header will be rendered by JS -->
                     </tr>
                 </thead>
                 <tbody id="resultTableBody">
                 </tbody>
             </table>
+            <!-- TODO: Make table columns sortable and add better interactivity -->
         </div>
 
         <div class="achievements-section">
